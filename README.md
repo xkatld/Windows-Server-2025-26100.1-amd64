@@ -1,4 +1,4 @@
-# Windows-11-version-25H2-26200.6713-amd64
+# Windows Server 2025 (26100.1) amd64 数据中心版
 
 语言
 ~~~
