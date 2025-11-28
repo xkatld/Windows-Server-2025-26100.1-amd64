@@ -26,6 +26,19 @@ jobs:
       - name: Run Build Script
         run: ./uup_download_linux.sh
 
+      - name: Fix Large ISO Files
+        run: |
+          ISO_FILE=$(find . -maxdepth 1 -name "*.iso" -type f | head -n 1)
+          if [ -n "$ISO_FILE" ]; then
+            mkdir -p ISODIR
+            sudo mount -o loop "$ISO_FILE" /mnt
+            cp -r /mnt/* ISODIR/
+            sudo umount /mnt
+            genisoimage -allow-limited-size -iso-level 4 -o "Windows-11-Fixed.iso" ISODIR/
+            rm "$ISO_FILE"
+            mv "Windows-11-Fixed.iso" "$ISO_FILE"
+          fi
+
       - name: Upload ISO as Artifact
         if: success()
         uses: actions/upload-artifact@v4
