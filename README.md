@@ -1,2 +1,10 @@
-# Windows-Server-2025-26100.1-amd64
-在线构建：Windows Server 2025 (26100.1) amd64
+# Windows-11-version-25H2-26200.6713-amd64
+
+语言
+~~~
+中文（简体）
+~~~
+SKU 版本
+~~~
+Windows 专业版
+~~~
