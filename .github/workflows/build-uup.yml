@@ -18,7 +18,7 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt update
-          sudo apt install -y aria2 cabextract wimtools chntpw genisoimage
+          sudo apt install -y aria2 cabextract wimtools chntpw xorriso
 
       - name: Make Script Executable
         run: chmod +x ./uup_download_linux.sh
@@ -27,6 +27,7 @@ jobs:
         run: ./uup_download_linux.sh
 
       - name: Fix Large ISO Files
+        id: fix_iso
         run: |
           ISO_FILE=$(find . -maxdepth 1 -name "*.iso" -type f | head -n 1)
           if [ -n "$ISO_FILE" ]; then
@@ -34,16 +35,17 @@ jobs:
             sudo mount -o loop "$ISO_FILE" /mnt
             cp -r /mnt/* ISODIR/
             sudo umount /mnt
-            genisoimage -allow-limited-size -iso-level 4 -o "Windows-11-Fixed.iso" ISODIR/
+            xorrisofs -iso-level 3 -udf -o "Windows-Fixed.iso" ISODIR/
             rm "$ISO_FILE"
-            mv "Windows-11-Fixed.iso" "$ISO_FILE"
+            mv "Windows-Fixed.iso" "$ISO_FILE"
+            echo "iso_name=$(basename "$ISO_FILE" .iso)" >> $GITHUB_OUTPUT
           fi
 
       - name: Upload ISO as Artifact
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: Windows-Server-2025-26100.1-amd64
+          name: ${{ steps.fix_iso.outputs.iso_name }}
           path: |
             *.ISO
             *.iso
